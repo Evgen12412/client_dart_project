@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  freezed: ^2.1.0+1
+  freezed_annotation: ^2.1.0
   dio: ^4.0.6
   injectable: ^1.5.3
   get_it: ^7.2.0
