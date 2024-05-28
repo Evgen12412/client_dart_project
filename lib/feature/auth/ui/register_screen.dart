@@ -1,22 +1,23 @@
 import 'package:client_dart_project/app/ui/components/app_text_button.dart';
 import 'package:client_dart_project/app/ui/components/app_text_field.dart';
 import 'package:client_dart_project/feature/auth/domain/auth_state/auth_cubit.dart';
-import 'package:client_dart_project/feature/auth/ui/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  RegisterScreen({super.key});
 
   final controllerLogin = TextEditingController();
+  final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
+  final controllerConfirmPassword = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LoginScreen"),
+        title: const Text("RegisterScreen"),
       ),
       body: Form(
         key: formKey,
@@ -34,8 +35,23 @@ class LoginScreen extends StatelessWidget {
                   height: 16,
                 ),
                 AppTextField(
+                  controller: controllerEmail,
+                  labelText: "Email",
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
                   controller: controllerPassword,
                   labelText: "Password",
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                AppTextField(
+                  controller: controllerConfirmPassword,
+                  labelText: "Confirm Password",
                   obscureText: true,
                 ),
                 const SizedBox(
@@ -44,19 +60,15 @@ class LoginScreen extends StatelessWidget {
                 AppTextButton(
                   onPressed: () {
                     if (formKey.currentState?.validate() == true) {
-                      _onTapToSignIn(context.read<AuthCubit>());
+                      if (controllerPassword.text !=
+                          controllerConfirmPassword.text) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Password not true")));
+                      } else {
+                        _onTapToSignUp(context.read<AuthCubit>());
+                        Navigator.of(context).pop();
+                      }
                     }
-                  },
-                  text: "Log In",
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                AppTextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => RegisterScreen()
-                    ));
                   },
                   text: "Register",
                   backgroundColor: Colors.blueGrey,
@@ -69,6 +81,8 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void _onTapToSignIn(AuthCubit authCubit) => authCubit.signIn(
-      username: controllerLogin.text, password: controllerPassword.text);
+  void _onTapToSignUp(AuthCubit authCubit) => authCubit.signUp(
+      username: controllerLogin.text,
+      email: controllerEmail.text,
+      password: controllerPassword.text);
 }
