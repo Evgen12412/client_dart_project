@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-part 'auth_state.dart';
 part 'auth_cubit.freezed.dart';
 part 'auth_cubit.g.dart';
+part 'auth_state.dart';
 
 class AuthCubit extends HydratedCubit<AuthState> {
-  AuthCubit(this.authRepository):super(AuthState.notAuthorized());
+  AuthCubit(this.authRepository) : super(AuthState.notAuthorized());
 
   final AuthRepository authRepository;
 
@@ -19,8 +19,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }) async {
     emit(AuthState.waiting());
     try {
-      final UserEntity userEntity = await authRepository.signIn(
-          password: password, username: username);
+      final UserEntity userEntity =
+          await authRepository.signIn(password: password, username: username);
       emit(AuthState.authorized(userEntity));
     } catch (e) {
       emit(AuthState.error(e));
@@ -44,6 +44,20 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  Future<void> refreshToken() async {
+    final refreshToken =
+        state.whenOrNull(authorized: (userEntity) => userEntity.refreshToken);
+    try {
+      final UserEntity userEntity = await authRepository.refreshToken(
+        refreshToken: refreshToken
+      );
+      emit(AuthState.authorized(userEntity));
+    } catch (e) {
+      emit(AuthState.error(e));
+      rethrow;
+    }
+  }
+
   void logOut() => emit(AuthState.notAuthorized());
 
   @override
@@ -56,6 +70,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
   @override
   Map<String, dynamic>? toJson(AuthState state) {
-   return state.toJson();
+    return state
+            .whenOrNull(
+              authorized: (userEntity) => AuthState.authorized(userEntity),
+            )
+            ?.toJson() ??
+        AuthState.notAuthorized().toJson();
   }
 }
