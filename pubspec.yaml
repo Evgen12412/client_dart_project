@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  path_provider: ^2.0.11
+  hydrated_bloc: ^8.1.0
   json_serializable: ^6.5.1
   flutter_bloc: ^8.1.1
   freezed: ^2.1.0+1
