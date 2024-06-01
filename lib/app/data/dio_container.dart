@@ -9,7 +9,7 @@ class DioContainer {
   DioContainer(AppConfig appConfig) {
     final options = BaseOptions(
       baseUrl: appConfig.baseUrl,
-      connectTimeout: 15000,
+      connectTimeout: const Duration(seconds: 15),
     );
     dio = Dio(options);
   }
