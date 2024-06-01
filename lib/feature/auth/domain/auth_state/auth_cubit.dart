@@ -22,9 +22,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final UserEntity userEntity = await authRepository.signIn(
           password: password, username: username);
       emit(AuthState.authorized(userEntity));
-    } catch (e) {
-      emit(AuthState.error(e));
-      rethrow;
+    } catch (error, st) {
+      addError(error, st);
     }
   }
 
@@ -38,9 +37,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final UserEntity userEntity = await authRepository.signUp(
           password: password, username: username, email: email);
       emit(AuthState.authorized(userEntity));
-    } catch (e) {
-      emit(AuthState.error(e));
-      rethrow;
+    }  catch (error, st) {
+      addError(error, st);
     }
   }
 
@@ -59,5 +57,11 @@ class AuthCubit extends HydratedCubit<AuthState> {
     return state.whenOrNull(
       authorized: (userEntity) => AuthState.authorized(userEntity),
     )?.toJson()?? AuthState.notAuthorized().toJson();
+  }
+
+  @override
+  void addError(Object error, [StackTrace? stackTrace]) {
+    emit(AuthState.error(error));
+    super.addError(error, stackTrace);
   }
 }
