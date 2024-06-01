@@ -56,6 +56,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
   @override
   Map<String, dynamic>? toJson(AuthState state) {
-   return state.toJson();
+    return state.whenOrNull(
+      authorized: (userEntity) => AuthState.authorized(userEntity),
+    )?.toJson()?? AuthState.notAuthorized().toJson();
   }
 }
