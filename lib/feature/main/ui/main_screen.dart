@@ -11,19 +11,30 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("MainScreen"),
-        backgroundColor: const Color.fromRGBO(
-            21, 60, 151, 0.10196078431372549),
-        actions: [
-          IconButton(
-              onPressed: context.read<AuthCubit>().logOut,
-              icon: const Icon(Icons.exit_to_app))
-        ],
-      ),
-      body: Center(
-        child: Text(userEntity.username),
-      ),
+        appBar: AppBar(
+          title: const Text("MainScreen"),
+          backgroundColor: const Color.fromRGBO(
+              21, 60, 151, 0.10196078431372549),
+          actions: [
+            IconButton(
+                onPressed: context.read<AuthCubit>().refreshToken,
+                icon: const Icon(Icons.refresh)),
+            IconButton(
+                onPressed: context.read<AuthCubit>().logOut,
+                icon: const Icon(Icons.exit_to_app)),
+          ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("username: ${userEntity.username}"),
+            const SizedBox(height: 20,),
+            Text("accessToken: ${userEntity.accessToken}"),
+            const SizedBox(height: 20,),
+            Text("refreshToken: ${userEntity.refreshToken}"),
+            const SizedBox(height: 20,),
+          ],
+        )
     );
   }
 }
