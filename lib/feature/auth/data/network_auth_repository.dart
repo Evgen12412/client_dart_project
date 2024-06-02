@@ -40,6 +40,7 @@ class NetworkAuthRepository implements AuthRepository {
     try {
       final response = await dioContainer.dio.post("/auth/token",
       data: {
+
         "username" : username,
         "password" : password
       });
