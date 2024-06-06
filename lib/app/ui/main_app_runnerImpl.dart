@@ -12,7 +12,6 @@ class MainAppRunnerImpl implements AppRunner {
 
   @override
   Future<void> preloadData() async {
-    WidgetsFlutterBinding.ensureInitialized();
     // init app
     // init di
     initDi(env);
@@ -21,12 +20,14 @@ class MainAppRunnerImpl implements AppRunner {
 
   @override
   Future<void> run(AppBuilder appBuilder) async {
-    await preloadData();
-    final storages = await HydratedStorage.build(
+    final storage = await HydratedStorage.build(
         storageDirectory: await getApplicationDocumentsDirectory());
     HydratedBlocOverrides.runZoned(
-      () => runApp(appBuilder.buildApp()),
-      storage: storages,
+      () async {
+        await preloadData();
+        runApp(appBuilder.buildApp());
+      },
+      storage: storage,
     );
   }
 }
